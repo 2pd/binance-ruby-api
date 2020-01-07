@@ -49,6 +49,19 @@ ENV['BINANCE_PUBLIC_API_KEY'] = 'xxxxxx'
 ENV['BINANCE_PRIVATE_API_KEY'] = 'yyyyy'
 # showing all coins information
 Binance::Account.all_coins
+
+#show account balance
+Binance::Account.snapshot(type: 'SPOT')
+Binance::Account.balance(type: 'SPOT')
+
+# withdraw coin
+puts Binance::Account.withdraw(
+  asset: 'BNB',
+  address: 'bnbxxxx',
+  amount: '0.01',
+  params: {
+    addressTag: '11111',
+})
 ```
 
 ## Development

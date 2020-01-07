@@ -21,11 +21,10 @@ module Binance
         when :get
           response = send(method, path, headers: build_headers, query: params)
         else
-
           response = if params.empty?
                       send(method, path, headers: build_headers)
-                    else 
-                      send(method, path, headers: build_headers, body: params.to_json)
+                    else
+                      send(method, path, headers: build_headers, query: params)
                     end
         end
         process(response)
@@ -34,7 +33,7 @@ module Binance
       private
 
       def timestamp
-          Time.now.utc.strftime('%s%3N')
+        Time.now.utc.strftime('%s%3N')
       end
 
       def signature(params:)
@@ -61,7 +60,12 @@ module Binance
       end
 
       def process(response)
-        data = JSON.parse(response.body, symbolize_names: true)
+        result = if response.body.empty?
+                  '{}'
+                 else
+                   response.body
+                 end
+        data = JSON.parse(result, symbolize_names: true)
         raise Error.new(response.code, data) if Error.error_response?(response)
 
         data
